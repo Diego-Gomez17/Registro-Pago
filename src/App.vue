@@ -9,7 +9,6 @@
       </nav>
     </div>
   </header>
-
   <RouterView />
 </template>
 <script setup>

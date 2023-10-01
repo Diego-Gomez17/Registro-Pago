@@ -1,41 +1,51 @@
 <template>
-    <div v-if="userList">
-        <h3>Lista de usarios</h3>
-        <ol>
-            <li v-for="user  in userList" :key="user.id">
-                <p>nombre: {{ user.name }} - email: {{ user.email }}  </p>
-            </li>
-        </ol>
+    <div>
+        <div v-if="payList.length > 0">
+            <h3>Lista de usarios</h3>
+            <ol>
+                <li v-for="payClient  in payList" :key="payClient.id">
+                    <p>rut: {{ payClient.apoderado.rut }} - 
+                        nombre: {{ payClient.apoderado.nombre }} - 
+                        nombre del alumno: {{ payClient.apoderado.alumnos[0].nombre }} - 
+                        curso: {{ payClient.ciclo }} -
+                        nivel: {{ payClient.nivel }} -
+                        Anualidad: {{ payClient.anualidad }} - 
+                        Pago: {{ payClient.pago }}
+                        
+                     </p>
+                </li>
+            </ol>
+        </div>
+        <div v-else-if="payList == 0">
+            <h3>No hay pagos registrados</h3>
+        </div>
     </div>
-    <div v-else>
-        <p>cargando...</p>
-    </div>
+    <Loader :isLoading="isLoading" />
 </template>
 <script setup>
+import Loader from '../components/Loader.vue';
 import { ref as collection, onValue } from 'firebase/database'
-import { ref } from 'vue'
+import { ref as refVue } from 'vue'
 import { db } from '../Firebase/init'
 import { onMounted } from 'vue';
 
+const isLoading = refVue(true);
 
-const userList = ref([])
-const usersData = collection(db, 'users/');
-// onMounted(() => {
-//     onValue(usersData, (snapshot) => {
-//         const data = snapshot.val();
-//         userList.value = Object.values(data)
-//         const ids = userList.value.map((user) => user.uid)
-//         console.log(ids)
-//     });
-// });
+
+const payList = refVue([])
+const payRef = collection(db, 'pagos/');
+
 onMounted(() => {
-    onValue(usersData, (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-            const childKey = childSnapshot.key;
-            const childData = childSnapshot.val();
-            userList.value.push(childKey,childData)
-        });
+
+    onValue(payRef, (snapshot) => {
+        const data = snapshot.val();
+        payList.value = Object.values(data)
     });
+    isLoading.value = false;
 });
+
+
+
+
 </script>
 <style scoped></style>

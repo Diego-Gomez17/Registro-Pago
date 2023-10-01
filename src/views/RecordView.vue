@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1>This is an about page</h1>
-    <SetCurso />
+    <h1>Ingrese un nuevo registro</h1>
     <br>
     <SetApoderado />
     <br>
