@@ -11,7 +11,6 @@
 </template>
 <script setup>
 import SetApoderado from '../components/SetApoderado.vue';
-import SetCurso from '../components/SetCurso.vue'
 import SetPagos from '../components/setPagos.vue';
 </script>
 

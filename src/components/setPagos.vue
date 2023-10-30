@@ -1,6 +1,6 @@
 <template>
     <div class="cont-apoderado">
-        <p>Ingresar un Apoderado</p>
+        <p>Ingresar un Pago</p>
         <form @submit.prevent="writeApoderadoData">
             <label for="">Nombre Apoderado</label>
             <select v-model="selectedUser" required>
@@ -93,7 +93,6 @@ onMounted(() => {
         userOptions.value = options;
     });
 });
-//-------------------
 </script>
 <style scoped>
 .cont-apoderado {

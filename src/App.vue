@@ -5,6 +5,7 @@
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/records">Registro</RouterLink>
+
         <Auth />
       </nav>
     </div>
@@ -19,11 +20,22 @@ import  Auth  from './components/auth.vue'
 
 <style scoped>
 
+.wrapper{
+  background-color: rgb(30, 54, 192);
+}
+a {
+  text-decoration: none;
+  color: white;
+}
+
 nav{
+  padding: 20px;
   display: flex;
   justify-content: center;
   gap: 1rem;
   min-width: 1024px;
+  font-size: 1.2rem;
+  font-weight: bolder;
 }
 
 

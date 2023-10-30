@@ -18,9 +18,14 @@ const store = userStore();
 
 </script>
 <style scoped>
+
 .cont-home{
   display:flex;
   flex-direction: column;
   justify-content: center;
+  padding: 15px;
+}
+h1{
+  text-align: center;
 }
 </style>

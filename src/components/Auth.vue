@@ -1,10 +1,11 @@
 <template lang="">
     <div>
         <div v-if="!store.user">
-            <button @click="singIn">Sing In</button>
+            <button @click="singIn" class="btn btn-primary p-1">Sing In</button>
           </div>
-          <div v-else>
-            <button @click="userOut">Sign Out</button>
+          <div class="username" v-else>
+            <p>{{ store.user.name }}</p>
+            <button class="btn btn-primary " @click="userOut">Sign Out</button>
           </div>
     </div>
 </template>
@@ -66,5 +67,18 @@ const userOut = () => {
 }
 </script>
 <style scoped>
-    
+    .username{
+      display: flex;
+      flex-direction: row;
+      gap:15px;
+      justify-content: center;
+      align-items: center;
+
+    }
+    p{
+      color:rgb(209, 213, 216);
+    }
+    button{
+      margin-top: -10px;
+    }
 </style>

@@ -2,13 +2,14 @@
     <div class="cont-apoderado">
         <p>Ingresar un Apoderado</p>
         <label for="">Nombre Apoderado</label>
-        <input type="text" id="nombre" v-model="nombre">
+        <input type="text" id="nombre" v-model="nombre" required>
         <label for="">Rut</label>
-        <input type="text" id="rut" v-model="rut">
+        <input type="text" id="rut" name="rut" v-model="rut">
+        <p v-if="!rutValido">RUT no válido</p>
 
         <br>
         <button @click="writeApoderadoData">Nuevo Apoderado</button>
-        <button @click="showPopup">Agregar alumno adicional</button>
+        <button @click="showPopup">Agregar alumno</button>
 
         <div v-if="isPopupOpen">
             <div class="popup">
@@ -22,7 +23,7 @@
 
                     <div class="form-group">
                         <label for="rut">Rut del Alumno</label>
-                        <input type="text" class="form-control" v-model="alumno.rut">
+                        <input type="text" class="form-control" v-model="alumno.rut" >
                     </div>
 
                     <input type="submit" value="Ageregar alumno">
@@ -39,7 +40,6 @@
 </template>
 <script setup>
 import Loader from '../components/Loader.vue';
-
 import { ref as refVue, onMounted } from 'vue'
 import { ref, push } from 'firebase/database'
 import { db } from '../Firebase/init'
@@ -52,11 +52,11 @@ onMounted(() => {
 //database reference
 const apoderadoRef = ref(db, 'apoderados')
 
-
 //form data
 const nombre = refVue('');
 const rut = refVue();
 const alumnos = refVue([]);
+
 const alumno = refVue({
     nombre: '',
     rut: ''
