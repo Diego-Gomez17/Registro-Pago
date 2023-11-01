@@ -1,40 +1,65 @@
 <template>
     <div class="cont-apoderado">
         <p>Ingresar un Apoderado</p>
+
         <label for="">Nombre Apoderado</label>
         <input type="text" id="nombre" v-model="nombre" required>
         <label for="">Rut</label>
-        <input type="text" id="rut" name="rut" v-model="rut">
+        <input type="text" id="rut" name="rut" v-model="rut" required>
         <p v-if="!rutValido">RUT no válido</p>
 
-        <br>
-        <button @click="writeApoderadoData">Nuevo Apoderado</button>
-        <button @click="showPopup">Agregar alumno</button>
+        <div class="btns">
 
+            <button class="btn btn-success" @click="showPopup">Agregar alumno</button>
+            <button class="btn btn-primary" @click="writeApoderadoData">Ingresar Apoderado</button>
+
+        </div>
         <div v-if="isPopupOpen">
             <div class="popup">
-                <h2>Formulario de alumno</h2>
-                <form @submit.prevent="addAlumno">
+                <div class="cont-popup">
+                    <h2>Formulario de alumno</h2>
+                    <form @submit.prevent="addAlumno">
 
-                    <div class="form-group">
-                        <label for="nombre">Nombre del Alumno</label>
-                        <input type="text" class="form-control" v-model="alumno.nombre">
-                    </div>
+                        <div class="form-group">
+                            <label for="nombre">Nombre del Alumno</label>
+                            <input type="text" class="form-control" v-model="alumno.nombre" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="rut">Rut del Alumno</label>
-                        <input type="text" class="form-control" v-model="alumno.rut" >
-                    </div>
+                        <div class="form-group">
+                            <label for="rut">Rut del Alumno</label>
+                            <input type="text" class="form-control" v-model="alumno.rut" required>
+                        </div>
 
-                    <input type="submit" value="Ageregar alumno">
-                    <button @click="ClosePopUP">Cerrar</button>
-                </form>
+                        <div class="btns" style="margin-top: 15px;">
+
+                            <input class="btn btn-success" type="submit" value="Ageregar alumno">
+                            <button class="btn btn-danger" @click="ClosePopUP">Cerrar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <ol>
-            <li v-for="(alumno, index) in alumnos" :key="index">{{ alumno.nombre }} {{ alumno.rut }} <button
-                    @click="deleteAlumno(alumno)">Eliminar</button></li>
-        </ol>
+        <hr style="z-index: -1;">
+        <h3 style="text-align:center;">Alumnos</h3>
+        <div class="list-alumnos">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Rut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(alumno, index) in alumnos" :key="index">
+                        <th scope="row">{{ index + 1 }}</th>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.rut }}</td>
+                        <td><button class="btn btn-danger" @click="deleteAlumno(alumno)">Eliminar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <Loader :isLoading="isLoading" />
 </template>
@@ -43,6 +68,8 @@ import Loader from '../components/Loader.vue';
 import { ref as refVue, onMounted } from 'vue'
 import { ref, push } from 'firebase/database'
 import { db } from '../Firebase/init'
+
+
 //loader
 const isLoading = refVue(true);
 onMounted(() => {
@@ -64,18 +91,63 @@ const alumno = refVue({
 
 //post
 function writeApoderadoData() {
-    console.log('escribiendo un nuevo apoderado')
-    //alumnos.value.push(alumno.value)
-    const newApoderado = {
-        nombre: nombre.value,
-        rut: rut.value,
-        alumnos: alumnos.value
-    }
-    push(apoderadoRef, newApoderado);
+    if (nombre.value == '' || rut.value == null) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'No has ingreasado los datos del apoderados',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+        })
+    } else {
 
-    console.log('apoderado creado: ', nombre.value, rut.value)
+        if (alumnos.value.length == 0) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'No has registrado ningun alumno a este apoderado',
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
+            })
+
+        }
+        else {
+
+            Swal.fire({
+                title: 'Estas seguro de ingresar este usuario?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                denyButtonText: `Mejor no`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    const newApoderado = {
+                        nombre: nombre.value,
+                        rut: rut.value,
+                        alumnos: alumnos.value
+                    }
+                    push(apoderadoRef, newApoderado);
+
+                    console.log('apoderado creado: ', nombre.value, rut.value)
+
+                    resetData()
+                    Swal.fire('Saved!', '', 'success')
+                } else if (result.isDenied) {
+                    Swal.fire('No se ha guardado los datos', '', 'info')
+                }
+            })
+        }
+    }
 }
 
+function resetData() {
+  nombre.value = '';
+  rut.value = '';
+  alumnos.value = [];
+  alumno.value = {
+    nombre: '',
+    rut: ''
+  };
+}
 //popup
 const isPopupOpen = refVue(false);
 
@@ -101,6 +173,15 @@ function deleteAlumno(alumno) {
 .cont-apoderado {
     display: flex;
     flex-direction: column;
+
+}
+
+
+.btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 15px
 }
 
 
@@ -113,7 +194,22 @@ function deleteAlumno(alumno) {
     transform: translate(-50%, -50%);
     background-color: #fff;
     color: black;
-    border-radius: 5px;
+    border-radius: 15px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+}
+
+.cont-popup {
+    margin: 15px;
+    padding: 15px;
+}
+
+.list-alumnos {
+    margin: 15px;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 </style>

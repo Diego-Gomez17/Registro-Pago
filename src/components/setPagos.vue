@@ -13,8 +13,8 @@
             <input type="text" v-model="nivel">
             <label for="">Ciclo</label>
             <input type="text" v-model="ciclo">
-            <label for="">Fecha de Pago</label>
-            <VueDatePicker v-model="fechaPago" :enable-time-picker="false" :format="format" :placeholder="fechaPago" />
+            <!-- <label for="">Fecha de Pago</label>
+            <VueDatePicker v-model="fechaPago" :enable-time-picker="false" :format="format" :placeholder="fechaPago" /> -->
             <label for="">Pago</label>
             <input type="number" v-model="pago" required>
             <input type="submit" value="Nuevo Pago">
@@ -29,7 +29,7 @@ import { db } from '../Firebase/init'
 const currentDate = new Date().toLocaleDateString('es-ES');
 
 
-const anualidad = refVue(new Date().getFullYear());
+const anualidad = refVue(String(new Date().getFullYear()));
 const curso = refVue(''); // primero, segundo <--- agregar
 const nivel = refVue(''); // a , b, c
 const ciclo = refVue(); // parbulo, primer ciclo ,segundo ciclo, media

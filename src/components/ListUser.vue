@@ -95,10 +95,6 @@ function filterPayments() {
 
         // Aplica lógica de filtro por año si se selecciona un año
         const yearFilter = anualidad.includes(queryYear)
-        // Devuelve verdadero si ambos filtros son verdaderos
-        console.log(payClient)
-        console.log(yearFilter)
-        //console.log(searchFilter)
         return searchFilter && yearFilter;
     });
 }
