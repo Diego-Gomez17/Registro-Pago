@@ -4,7 +4,7 @@
             <h3>Lista de Pagos</h3>
             <input v-model="searchQuery" type="text" placeholder="Buscar" />
             <select v-model="selectedYear">
-                <option value="" selected >Todos los años</option>
+                <option value="" selected>Todos los años</option>
                 <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
             </select>
             <table class="table">
@@ -71,22 +71,36 @@ onMounted(() => {
             uniqueYears.add(payClient.anualidad);
         }
 
-        availableYears.value = Array.from(uniqueYears); // Convierte el conjunto a un array
+        const numeros = Array.from(uniqueYears)
+
+        // Convertir los números a números
+        const numerosNumeros = numeros.map(numero => Number(numero));
+
+        // Ordenar los números
+        numerosNumeros.sort(compare);
+
+        availableYears.value = numerosNumeros // Convierte el conjunto a un array
 
         isLoading.value = false;
     });
 });
 
+function compare(a, b) {
+    const n1 = Number(a);
+    const n2 = Number(b);
+
+    return n2 - n1;
+}
 
 function filterPayments() {
     const query = searchQuery.value.toLowerCase();
-    const queryYear= selectedYear.value;
+    const queryYear = selectedYear.value;
     return payList.value.filter((payClient) => {
         const apoderadoNombre = payClient.apoderado.nombre.toLowerCase();
         const alumnoNombre = payClient.apoderado.alumnos[0].nombre.toLowerCase();
         const rut = payClient.apoderado.rut.toLowerCase();
 
-        const anualidad =  payClient.anualidad
+        const anualidad = payClient.anualidad
 
         // Aplica lógica de filtro por búsqueda
         const searchFilter = apoderadoNombre.includes(query) ||
