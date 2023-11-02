@@ -1,32 +1,56 @@
 <template>
     <div class="cont-apoderado">
-        <p>Ingresar un Pago</p>
+        <h3>Ingresar un Pago</h3>
         <form @submit.prevent="writeApoderadoData">
-            <label for="">Nombre Apoderado</label>
+            <label for="">Rut Apoderado</label>
             <select v-model="selectedUser" required>
-                <option value="">Selecciona un usuario</option>
-                <option v-for="user in userOptions" :key="user.id" :value="user">{{ user.nombre }}</option>
+                <option value="">Selecciona un apoderado</option>
+                <option v-for="user in userOptions" :key="user.id" :value="user">{{ user.rut }}</option>
             </select>
+            <label for="" style="margin-top: 15px;">Nombre apoderado</label>
+            <input readonly type="text" :value="selectedUser.nombre">
             <label for="">Anualidad</label>
-            <input type="text" v-model="anualidad" required>
+            <input type="text" v-model="anualidad" required >
             <label for="">Nivel del curso</label>
-            <input type="text" v-model="nivel">
+            <input type="text" v-model="nivel" required>
             <label for="">Ciclo</label>
-            <input type="text" v-model="ciclo">
+            <input type="text" v-model="ciclo" required>
             <!-- <label for="">Fecha de Pago</label>
             <VueDatePicker v-model="fechaPago" :enable-time-picker="false" :format="format" :placeholder="fechaPago" /> -->
             <label for="">Pago</label>
             <input type="number" v-model="pago" required>
-            <input type="submit" value="Nuevo Pago">
+
+            <input type="submit" value="Nuevo Pago" class="btn btn-success" style="margin-top: 15px;">
         </form>
-        {{  selectedUser }}
+        <div class="list-alumnos">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Rut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(alumno, index) in selectedUser.alumnos" :key="index">
+                        <th scope="row">{{ index + 1 }}</th>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.rut }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 <script setup>
 import { ref as refVue, onMounted } from 'vue'
 import { ref, push, onValue } from 'firebase/database'
 import { db } from '../Firebase/init'
+import { swal } from 'sweetalert2/dist/sweetalert2';
 const currentDate = new Date().toLocaleDateString('es-ES');
+/* --------------------------------------------------------- */
+/* el pago se debe dividir entre los alumnos del apoderado   */
+/* --------------------------------------------------------- */
 
 
 const anualidad = refVue(String(new Date().getFullYear()));
@@ -52,22 +76,61 @@ const format = (date) => {
 //post
 function writeApoderadoData() {
     console.log('escribiendo un nuevo pago')
-    const newPago = {
-        apoderado: selectedUser.value,
-        anualidad: anualidad.value,
-        nivel: nivel.value,
-        ciclo: ciclo.value,
-        pago: pago.value
-    }
+    console.log(selectedUser.value.alumnos.length)
+    var cantAlumnos = selectedUser.value.alumnos.length
+    var pagos = Math.trunc(pago.value / cantAlumnos)
+
     try {
-        newPago.fechaPago = fechaPago.value.toLocaleDateString('es-ES');
-        push(pagoRef, newPago);
+        //newPago.fechaPago = fechaPago.value.toLocaleDateString('es-ES');
+        Swal.fire({
+            title: 'Estas seguro de ingresar este usuario?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            denyButtonText: `Mejor no`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                for (let student in selectedUser.value.alumnos) {
+                    console.log(student)
+                    console.log(selectedUser.value.alumnos[student].nombre)
+                    console.log(pagos)
+
+
+                    const newPago = {
+                        apoderado: selectedUser.value,
+                        alumno: selectedUser.value.alumnos[student],
+                        anualidad: anualidad.value,
+                        nivel: nivel.value,
+                        ciclo: ciclo.value,
+                        pago: pagos
+                    }
+
+
+
+
+                    push(pagoRef, newPago);
+                    console.log('pago creado: ', anualidad.value)
+                }
+                Swal.fire('Saved!', '', 'success')
+                resetData()
+            } else if (result.isDenied) {
+                Swal.fire('No se ha guardado los datos', '', 'info')
+            }
+        })
+
+
 
     } catch (error) {
-        newPago.fechaPago = fechaPago.value;
-        push(pagoRef, newPago);
+        Swal.fire({
+            title: 'Error!',
+            text: 'no se ha podido registrar el pago',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+        })
+        resetData()
+
     }
-    console.log('pago creado: ', anualidad.value)
 }
 
 //selector
@@ -93,6 +156,17 @@ onMounted(() => {
         userOptions.value = options;
     });
 });
+
+
+function resetData() {
+    anualidad.value = String(new Date().getFullYear());
+    nivel.value = ''; // a , b, c
+    ciclo.value = ''; // parbulo, primer ciclo ,segundo ciclo, media
+    fechaPago.value = (currentDate);
+    pago.value = null;
+}
+
+
 </script>
 <style scoped>
 .cont-apoderado {
@@ -104,5 +178,15 @@ form {
     display: flex;
     flex-direction: column;
 
+}
+
+.list-alumnos {
+    margin: 15px;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 </style>

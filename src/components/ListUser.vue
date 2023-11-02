@@ -13,8 +13,9 @@
                         <th scope="col">#</th>
                         <th scope="col">Rut</th>
                         <th scope="col">Nombre apoderado</th>
-                        <th scope="col">nombre del alumno</th>
-                        <th scope="col">curso</th>
+                        <th scope="col">Nombre del alumno</th>
+                        <th scope="col">Rut del alumno</th>
+                        <th scope="col">Curso</th>
                         <th scope="col">Nivel</th>
                         <th scope="col">Anualidad</th>
                         <th scope="col">Pago</th>
@@ -25,7 +26,8 @@
                         <th scope="row">{{ index + 1 }}</th>
                         <td>{{ payClient.apoderado.rut }}</td>
                         <td>{{ payClient.apoderado.nombre }}</td>
-                        <td> {{ payClient.apoderado.alumnos[0].nombre }}</td>
+                        <td> {{ payClient.alumno.nombre }}</td>
+                        <td> {{ payClient.alumno.rut }}</td>
                         <td> {{ payClient.ciclo }} </td>
                         <td> {{ payClient.nivel }} </td>
                         <td> {{ payClient.anualidad }} </td>
@@ -58,8 +60,10 @@ const availableYears = refVue([null])//listas de años
 
 onMounted(() => {
 
+    
     onValue(payRef, (snapshot) => {
         const data = snapshot.val();
+        if(data){
         const dataArray = Object.values(data);
         const reversedArray = dataArray.reverse(); // Invierte el array
 
@@ -69,8 +73,10 @@ onMounted(() => {
 
         for (var payClient of payList.value) {
             uniqueYears.add(payClient.anualidad);
+            console.log(payClient.alumno.nombre)
         }
 
+        /*--- ordena las fechas de forma descendente---*/
         const numeros = Array.from(uniqueYears)
 
         // Convertir los números a números
@@ -78,10 +84,14 @@ onMounted(() => {
 
         // Ordenar los números
         numerosNumeros.sort(compare);
-
+        /*---------------------------------------------*/
         availableYears.value = numerosNumeros // Convierte el conjunto a un array
 
         isLoading.value = false;
+    }
+    else{
+        isLoading.value = false;
+    }
     });
 });
 
@@ -97,15 +107,17 @@ function filterPayments() {
     const queryYear = selectedYear.value;
     return payList.value.filter((payClient) => {
         const apoderadoNombre = payClient.apoderado.nombre.toLowerCase();
-        const alumnoNombre = payClient.apoderado.alumnos[0].nombre.toLowerCase();
+        const alumnoNombre = payClient.alumno.nombre.toLowerCase();
         const rut = payClient.apoderado.rut.toLowerCase();
+        const rutAlumno = payClient.alumno.rut
 
         const anualidad = payClient.anualidad
 
         // Aplica lógica de filtro por búsqueda
         const searchFilter = apoderadoNombre.includes(query) ||
             alumnoNombre.includes(query) ||
-            rut.includes(query);
+            rut.includes(query) || 
+            rutAlumno.includes(query);
 
         // Aplica lógica de filtro por año si se selecciona un año
         const yearFilter = anualidad.includes(queryYear)

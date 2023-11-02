@@ -1,6 +1,6 @@
 <template>
     <div class="cont-apoderado">
-        <p>Ingresar un Apoderado</p>
+        <h3>Ingresar un Apoderado</h3>
 
         <label for="">Nombre Apoderado</label>
         <input type="text" id="nombre" v-model="nombre" required>
@@ -32,7 +32,7 @@
 
                         <div class="btns" style="margin-top: 15px;">
 
-                            <input class="btn btn-success" type="submit" value="Ageregar alumno">
+                            <input class="btn btn-success" type="submit" value="Agregar alumno">
                             <button class="btn btn-danger" @click="ClosePopUP">Cerrar</button>
                         </div>
                     </form>
@@ -94,7 +94,7 @@ function writeApoderadoData() {
     if (nombre.value == '' || rut.value == null) {
         Swal.fire({
             title: 'Error!',
-            text: 'No has ingreasado los datos del apoderados',
+            text: 'No has ingreasado los datos del apoderado',
             icon: 'error',
             confirmButtonText: 'Cerrar'
         })
