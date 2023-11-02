@@ -2,15 +2,20 @@
     <div class="cont-apoderado">
         <h3>Ingresar un Pago</h3>
         <form @submit.prevent="writeApoderadoData">
-            <label for="">Rut Apoderado</label>
+            <!-- <label for="">Rut Apoderado</label>
             <select v-model="selectedUser" required>
                 <option value="">Selecciona un apoderado</option>
                 <option v-for="user in userOptions" :key="user.id" :value="user">{{ user.rut }}</option>
-            </select>
+            </select> -->
+
+            <label for="rutInput">Rut Apoderado</label>
+            <input type="text" v-model="rutInput" id="rutInput" required>
+            <button class="btn btn-warning" @click="searchApoderado" style="margin-top: 15px;">Buscar</button>
+
             <label for="" style="margin-top: 15px;">Nombre apoderado</label>
             <input readonly type="text" :value="selectedUser.nombre">
             <label for="">Anualidad</label>
-            <input type="text" v-model="anualidad" required >
+            <input type="text" v-model="anualidad" required>
             <label for="">Nivel del curso</label>
             <input type="text" v-model="nivel" required>
             <label for="">Ciclo</label>
@@ -51,6 +56,7 @@ const currentDate = new Date().toLocaleDateString('es-ES');
 /* --------------------------------------------------------- */
 /* el pago se debe dividir entre los alumnos del apoderado   */
 /* --------------------------------------------------------- */
+
 
 
 const anualidad = refVue(String(new Date().getFullYear()));
@@ -156,6 +162,32 @@ onMounted(() => {
         userOptions.value = options;
     });
 });
+
+
+function searchApoderado() {
+  const rutToSearch = rutInput.value;
+  if (!rutToSearch) {
+    return;
+  }
+
+  // Realiza la búsqueda del apoderado por el rut
+  const foundUser = userOptions.value.find(user => user.rut === rutToSearch);
+
+  if (foundUser) {
+    selectedUser.value = foundUser;
+  } else {
+    // Si no se encuentra, puedes mostrar un mensaje de error o realizar alguna acción
+    // como limpiar los campos de búsqueda.
+    Swal.fire({
+      title: 'Apoderado no encontrado',
+      text: 'El Rut ingresado no corresponde a un apoderado existente.',
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    });
+    // También puedes limpiar el campo de búsqueda después de mostrar el mensaje de error.
+    rutInput.value = '';
+  }
+}
 
 
 function resetData() {

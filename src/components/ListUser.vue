@@ -73,7 +73,6 @@ onMounted(() => {
 
         for (var payClient of payList.value) {
             uniqueYears.add(payClient.anualidad);
-            console.log(payClient.alumno.nombre)
         }
 
         /*--- ordena las fechas de forma descendente---*/
