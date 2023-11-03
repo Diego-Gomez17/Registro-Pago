@@ -6,7 +6,6 @@
         <input type="text" id="nombre" v-model="nombre" required>
         <label for="">Rut</label>
         <input type="text" id="rut" name="rut" v-model="rut" required>
-        <p v-if="!rutValido">RUT no válido</p>
 
         <div class="btns">
 
@@ -29,9 +28,8 @@
                             <label for="rut">Rut del Alumno</label>
                             <input type="text" class="form-control" v-model="alumno.rut" required>
                         </div>
-
-                        <div class="btns" style="margin-top: 15px;">
-
+                        <br>
+                        <div class="btns">
                             <input class="btn btn-success" type="submit" value="Agregar alumno">
                             <button class="btn btn-danger" @click="ClosePopUP">Cerrar</button>
                         </div>
@@ -89,6 +87,10 @@ const alumno = refVue({
     rut: ''
 })
 
+async function existeRUT(rut) {
+    const snapshot = await get(child(apoderadoRef, rut));
+    return snapshot.exists();
+}
 //post
 function writeApoderadoData() {
     if (nombre.value == '' || rut.value == null) {
@@ -110,43 +112,84 @@ function writeApoderadoData() {
 
         }
         else {
-
-            Swal.fire({
-                title: 'Estas seguro de ingresar este usuario?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Guardar',
-                denyButtonText: `Mejor no`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    const newApoderado = {
-                        nombre: nombre.value,
-                        rut: rut.value,
-                        alumnos: alumnos.value
-                    }
-                    push(apoderadoRef, newApoderado);
-
-                    console.log('apoderado creado: ', nombre.value, rut.value)
-
-                    resetData()
-                    Swal.fire('Saved!', '', 'success')
-                } else if (result.isDenied) {
-                    Swal.fire('No se ha guardado los datos', '', 'info')
+            if (Fn.validaRut(rut.value)) {
+                if (existeRUT(rut.value)) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'El RUT de ese apoderado ya existe en la base de datos',
+                        icon: 'error',
+                        confirmButtonText: 'Cerrar'
+                    })
                 }
-            })
+                else {
+                    Swal.fire({
+                        title: 'Estas seguro de ingresar este usuario?',
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Guardar',
+                        denyButtonText: `Mejor no`,
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            const newApoderado = {
+                                nombre: nombre.value,
+                                rut: rut.value,
+                                alumnos: alumnos.value
+                            }
+                            push(apoderadoRef, newApoderado);
+
+                            console.log('apoderado creado: ', nombre.value, rut.value)
+
+                            resetData()
+                            Swal.fire('Saved!', '', 'success')
+
+                        } else if (result.isDenied) {
+                            Swal.fire('No se ha guardado los datos', '', 'info')
+                        }
+                    })
+                }
+            }
+            else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'El rut ingreasado no es correcto',
+                    icon: 'error',
+                    confirmButtonText: 'Cerrar'
+                })
+                rut.value = '';
+            }
+
+
         }
     }
 }
 
 function resetData() {
-  nombre.value = '';
-  rut.value = '';
-  alumnos.value = [];
-  alumno.value = {
-    nombre: '',
-    rut: ''
-  };
+    nombre.value = '';
+    rut.value = '';
+    alumnos.value = [];
+    alumno.value = {
+        nombre: '',
+        rut: ''
+    };
+}
+var Fn = {
+    // Valida el rut con su cadena completa "XXXXXXXX-X"
+    validaRut: function (rutCompleto) {
+        if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(rutCompleto))
+            return false;
+        var tmp = rutCompleto.split('-');
+        var digv = tmp[1];
+        var rut = tmp[0];
+        if (digv == 'K') digv = 'k';
+        return (Fn.dv(rut) == digv);
+    },
+    dv: function (T) {
+        var M = 0, S = 1;
+        for (; T; T = Math.floor(T / 10))
+            S = (S + T % 10 * (9 - M++ % 6)) % 11;
+        return S ? S - 1 : 'k';
+    }
 }
 //popup
 const isPopupOpen = refVue(false);
@@ -158,10 +201,27 @@ function ClosePopUP() {
     isPopupOpen.value = false;
 }
 function addAlumno() {
-    console.log('agregando alumno')
-    const newAlumno = Object.assign({}, alumno.value)
-    alumnos.value.push(newAlumno)
-    console.log('alumno agregado ')
+    if (Fn.validaRut(alumno.value.rut)) {
+        console.log('agregando alumno')
+        const newAlumno = Object.assign({}, alumno.value)
+        alumnos.value.push(newAlumno)
+        console.log('alumno agregado ')
+        alumno.value = {
+            nombre: '',
+            rut: ''
+        };
+        ClosePopUP()
+    }
+    else {
+        Swal.fire({
+            title: 'Error!',
+            text: 'El rut ingreasado no es correcto',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+        })
+        alumno.value.rut = '';
+    }
+
 }
 function deleteAlumno(alumno) {
     this.alumnos.splice(this.alumnos.indexOf(alumno), 1);
@@ -177,11 +237,13 @@ function deleteAlumno(alumno) {
 
 
 .btns {
+    margin-top: 15px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     gap: 15px
 }
+
 .popup {
     width: 500px;
     height: 300px;
@@ -194,10 +256,12 @@ function deleteAlumno(alumno) {
     border-radius: 15px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
+
 .cont-popup {
     margin: 15px;
     padding: 15px;
 }
+
 .list-alumnos {
     margin: 15px;
     border: 2px solid black;

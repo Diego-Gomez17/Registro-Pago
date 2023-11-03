@@ -42,7 +42,7 @@ nav{
 }
 #logo{
   position: absolute;
-  left: 0;
+  left: 15px;
   top: 15px;
   width: 165px;
 }

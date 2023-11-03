@@ -1,6 +1,6 @@
 <template>
     <div class="table-apoderados">
-        <div v-if="payList.length > 0">
+        <div class="cont-list" v-if="payList.length > 0">
             <h3>Lista de Pagos</h3>
             <div class="btns">
 
@@ -11,7 +11,7 @@
                 </select>
                 <button class="btn btn-success" @click="exportToExcel()">Descargar Excel</button>
             </div>
-                <table class="table">
+            <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -26,8 +26,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(payClient, index) in filterPayments()" :key="payClient.id">
-                        <th scope="row">{{ index + 1 }}</th>
+                    <tr v-for="(payClient, index) in paginatedPayments" :key="payClient.id">
+                        <th scope="row">{{ (currentPage - 1) * perPage + index + 1 }}</th>
                         <td>{{ payClient.apoderado.rut }}</td>
                         <td>{{ payClient.apoderado.nombre }}</td>
                         <td> {{ payClient.alumno.nombre }}</td>
@@ -39,6 +39,11 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="pagination">
+                <button class="btn btn-secondary" @click="previousPage" :disabled="currentPage === 1">Anterior</button>
+                <span>{{ currentPage }}</span>
+                <button class="btn btn-dark" @click="nextPage" :disabled="currentPage * perPage >= totalPayments">Siguiente</button>
+              </div>
         </div>
         <div v-else-if="payList == 0">
             <h3>No hay pagos registrados</h3>
@@ -49,7 +54,7 @@
 <script setup>
 import Loader from '../components/Loader.vue';
 import { ref as collection, onValue } from 'firebase/database'
-import { ref as refVue } from 'vue'
+import { ref as refVue, computed } from 'vue'
 import { db } from '../Firebase/init'
 import { onMounted } from 'vue';
 
@@ -127,6 +132,34 @@ function filterPayments() {
         return searchFilter && yearFilter;
     });
 }
+
+// Define las variables para el paginador
+const currentPage = refVue(1);
+const perPage = 10; // Cambia esto al número deseado de elementos por página
+
+// Calcula la lista paginada
+const totalPayments = refVue(0);
+const paginatedPayments = computed(() => {
+  totalPayments.value = filterPayments().length;
+  const startIndex = (currentPage.value - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  return filterPayments().slice(startIndex, endIndex);
+});
+
+// Funciones para navegar a través de las páginas
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value -= 1;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value * perPage < totalPayments.value) {
+    currentPage.value += 1;
+  }
+};
+
+
 import * as XLSX from 'xlsx';
 
 function exportToExcel() {
@@ -176,6 +209,19 @@ function exportToExcel() {
     display: flex;
     flex-direction: wrap;
     gap: 15px;
+}
+.cont-list{
+    display: flex;
+    flex-direction: column;
+}
+.pagination{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+.table{
+    margin-top: 15px;
 }
 
 </style>
