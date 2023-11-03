@@ -33,8 +33,11 @@ import SetPagos from '../components/setPagos.vue';
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 15px;
 }
+
+
 
 h1 {
   text-align: center;
@@ -45,5 +48,6 @@ h1 {
   border: 2px solid black;
   border-radius: 15px;
   padding: 15px;
+  width: 65vw;
 }
 </style>

@@ -2,12 +2,16 @@
     <div class="table-apoderados">
         <div v-if="payList.length > 0">
             <h3>Lista de Pagos</h3>
-            <input v-model="searchQuery" type="text" placeholder="Buscar" />
-            <select v-model="selectedYear">
-                <option value="" selected>Todos los años</option>
-                <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
-            </select>
-            <table class="table">
+            <div class="btns">
+
+                <input v-model="searchQuery" type="text" placeholder="Buscar" />
+                <select v-model="selectedYear">
+                    <option value="" selected>Todos los años</option>
+                    <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
+                </select>
+                <button class="btn btn-success" @click="exportToExcel()">Descargar Excel</button>
+            </div>
+                <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -123,7 +127,42 @@ function filterPayments() {
         return searchFilter && yearFilter;
     });
 }
+import * as XLSX from 'xlsx';
 
+function exportToExcel() {
+    // Get the table data.
+    const tableData = filterPayments();
+  
+    // Create a new workbook.
+    const workbook = XLSX.utils.book_new(); // Utiliza XLSX.utils.book_new() en lugar de new XLSX.Workbook()
+  
+    // Add a worksheet to the workbook.
+    const worksheet = XLSX.utils.aoa_to_sheet([ // Convierte los datos en un formato que pueda ser agregado a la hoja de cálculo
+        ['Rut', 'Nombre apoderado', 'Nombre del alumno', 'Rut del alumno', 'Curso', 'Nivel', 'Anualidad', 'Pago'],
+    ]);
+  
+    // Iterate over the table data and add it to the worksheet.
+    for (let i = 0; i < tableData.length; i++) {
+      const payClient = tableData[i];
+  
+      XLSX.utils.sheet_add_aoa(worksheet, [[
+        payClient.apoderado.rut,
+        payClient.apoderado.nombre,
+        payClient.alumno.nombre,
+        payClient.alumno.rut,
+        payClient.ciclo,
+        payClient.nivel,
+        payClient.anualidad,
+        payClient.pago,
+      ]], { origin: -1 });
+    }
+  
+    // Add the worksheet to the workbook.
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Payments');
+  
+    // Save the workbook to a file.
+    XLSX.writeFile(workbook, 'Registro_Pago.xlsx');
+}
 </script>
 <style scoped>
 .table-apoderados {
@@ -131,5 +170,12 @@ function filterPayments() {
     border: 2px solid black;
     border-radius: 15px;
     padding: 15px;
+    
 }
+.btns{
+    display: flex;
+    flex-direction: wrap;
+    gap: 15px;
+}
+
 </style>

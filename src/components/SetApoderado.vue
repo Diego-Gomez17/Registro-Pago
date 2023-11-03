@@ -173,7 +173,6 @@ function deleteAlumno(alumno) {
 .cont-apoderado {
     display: flex;
     flex-direction: column;
-
 }
 
 
@@ -183,8 +182,6 @@ function deleteAlumno(alumno) {
     justify-content: space-around;
     gap: 15px
 }
-
-
 .popup {
     width: 500px;
     height: 300px;
@@ -197,12 +194,10 @@ function deleteAlumno(alumno) {
     border-radius: 15px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
 }
-
 .cont-popup {
     margin: 15px;
     padding: 15px;
 }
-
 .list-alumnos {
     margin: 15px;
     border: 2px solid black;
