@@ -89,7 +89,7 @@ function writeApoderadoData() {
     try {
         //newPago.fechaPago = fechaPago.value.toLocaleDateString('es-ES');
         Swal.fire({
-            title: 'Estas seguro de ingresar este usuario?',
+            title: 'Estas seguro de ingresar este pago?',
             showDenyButton: true,
             showCancelButton: true,
             confirmButtonText: 'Guardar',

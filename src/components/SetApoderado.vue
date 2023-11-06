@@ -64,7 +64,7 @@
 <script setup>
 import Loader from '../components/Loader.vue';
 import { ref as refVue, onMounted } from 'vue'
-import { ref, push } from 'firebase/database'
+import { ref, push, get, query } from 'firebase/database'
 import { db } from '../Firebase/init'
 
 
@@ -87,12 +87,8 @@ const alumno = refVue({
     rut: ''
 })
 
-async function existeRUT(rut) {
-    const snapshot = await get(child(apoderadoRef, rut));
-    return snapshot.exists();
-}
 //post
-function writeApoderadoData() {
+async function writeApoderadoData() {
     if (nombre.value == '' || rut.value == null) {
         Swal.fire({
             title: 'Error!',
@@ -113,41 +109,46 @@ function writeApoderadoData() {
         }
         else {
             if (Fn.validaRut(rut.value)) {
-                if (existeRUT(rut.value)) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'El RUT de ese apoderado ya existe en la base de datos',
-                        icon: 'error',
-                        confirmButtonText: 'Cerrar'
-                    })
-                }
-                else {
-                    Swal.fire({
-                        title: 'Estas seguro de ingresar este usuario?',
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: 'Guardar',
-                        denyButtonText: `Mejor no`,
-                    }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {
-                            const newApoderado = {
-                                nombre: nombre.value,
-                                rut: rut.value,
-                                alumnos: alumnos.value
-                            }
-                            push(apoderadoRef, newApoderado);
+                // verificar el rut 
+                buscarApoderadoPorRut(rut.value)
+                    .then((apoderadoEncontrado) => {
+                        if (apoderadoEncontrado) {
+                            console.log('Apoderado encontrado:', apoderadoEncontrado.nombre);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'El RUT de ese apoderado ya existe en la base de datos',
+                                icon: 'error',
+                                confirmButtonText: 'Cerrar'
+                            })
+                        } else {
+                            console.log('No se encontró ningún apoderado con el RUT:', rut.value);
+                            Swal.fire({
+                                title: 'Estas seguro de ingresar este usuario?',
+                                showDenyButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: 'Guardar',
+                                denyButtonText: `Mejor no`,
+                            }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    const newApoderado = {
+                                        nombre: nombre.value,
+                                        rut: rut.value,
+                                        alumnos: alumnos.value
+                                    }
+                                    push(apoderadoRef, newApoderado);
 
-                            console.log('apoderado creado: ', nombre.value, rut.value)
+                                    console.log('apoderado creado: ', nombre.value, rut.value)
 
-                            resetData()
-                            Swal.fire('Saved!', '', 'success')
+                                    resetData()
+                                    Swal.fire('Saved!', '', 'success')
 
-                        } else if (result.isDenied) {
-                            Swal.fire('No se ha guardado los datos', '', 'info')
+                                } else if (result.isDenied) {
+                                    Swal.fire('No se ha guardado los datos', '', 'info')
+                                }
+                            })
                         }
-                    })
-                }
+                    });
             }
             else {
                 Swal.fire({
@@ -164,6 +165,26 @@ function writeApoderadoData() {
     }
 }
 
+async function buscarApoderadoPorRut(rut) {
+    try {
+        const querySnapshot = await get(apoderadoRef);
+        const apoderados = querySnapshot.val();
+
+        if (apoderados) {
+            for (const key in apoderados) {
+                if (apoderados[key].rut === rut) {
+                    return apoderados[key]; // Devuelve el apoderado que coincide con el RUT
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error al buscar apoderado:', error);
+    }
+
+    return null; // Si no se encuentra un apoderado con el RUT, devuelve null
+}
+
+
 function resetData() {
     nombre.value = '';
     rut.value = '';
@@ -173,8 +194,9 @@ function resetData() {
         rut: ''
     };
 }
+// Valida el rut con su cadena completa "XXXXXXXX-X"
 var Fn = {
-    // Valida el rut con su cadena completa "XXXXXXXX-X"
+
     validaRut: function (rutCompleto) {
         if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(rutCompleto))
             return false;
