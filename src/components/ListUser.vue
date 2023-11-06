@@ -49,13 +49,13 @@
             <h3>No hay pagos registrados</h3>
         </div>
     </div>
-    <Loader :isLoading="isLoading" />
+    <!-- <Loader :isLoading="isLoading" /> -->
 </template>
 <script setup>
 import Loader from '../components/Loader.vue';
 import { ref as collection, onValue } from 'firebase/database'
 import { ref as refVue, computed } from 'vue'
-import { db } from '../Firebase/init'
+import { db, auth } from '../Firebase/init'
 import { onMounted } from 'vue';
 
 const isLoading = refVue(true);
