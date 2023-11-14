@@ -19,6 +19,11 @@ coverage
 
 src/Firebase/init.js
 
+#deploy
+.firebaserc
+firebase-tools-instant-win.exe
+firebase.json
+
 # Editor directories and files
 .vscode
 .vscode/*
@@ -29,3 +34,4 @@ src/Firebase/init.js
 *.njsproj
 *.sln
 *.sw?
+.firebase/hosting.ZGlzdA.cache

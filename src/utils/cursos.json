@@ -1,0 +1,153 @@
+{
+  "cursos": {
+    "Parvulo": {
+      "name": "Parvulo",
+      "nivel": {
+        "sala-cuna": {
+          "name": "Sala cuna",
+          "lvl": ["Sala cuna", "Medio menor", "Medio mayor"]
+        },
+        "pre-kinder": {
+          "name": "Pre kinder",
+          "lvl": [
+            "Pre kinder A",
+            "Pre kinder B",
+            "Pre kinder C",
+            "Pre kinder D"
+          ]
+        },
+        "kinder": {
+          "name": "Kinder",
+          "lvl": ["Kinder A", "Kinder B", "Kinder C", "Kinder D"]
+        }
+      }
+    },
+    "1er-ciclo": {
+      "name": "1er ciclo",
+      "nivel": {
+        "primero-basico": {
+          "name": "Primero Basico",
+          "lvl": [
+            "Primero Basico A",
+            "Primero Basico B",
+            "Primero Basico C",
+            "Primero Basico D"
+          ]
+        },
+        "segundo-basico": {
+          "name": "Segundo Basico",
+          "lvl": [
+            "Segundo Basico A",
+            "Segundo Basico B",
+            "Segundo Basico C",
+            "Segundo Basico D"
+          ]
+        },
+        "tercero-basico": {
+          "name": "Tercero Basico",
+          "lvl": [
+            "Tercero Basico A",
+            "Tercero Basico B",
+            "Tercero Basico C",
+            "Tercero Basico D"
+          ]
+        },
+        "cuarto-basico": {
+          "name": "Cuarto Basico",
+          "lvl": [
+            "Cuarto Basico A",
+            "Cuarto Basico B",
+            "Cuarto Basico C",
+            "Cuarto Basico D"
+          ]
+        }
+      }
+    },
+    "2do-ciclo": {
+      "name": "2do ciclo",
+      "nivel": {
+        "quinto": {
+          "name": "Quinto",
+          "lvl": [
+            "Quinto Basico A",
+            "Quinto Basico B",
+            "Quinto Basico C",
+            "Quinto Basico D"
+          ]
+        },
+        "sexto": {
+          "name": "Sexto",
+          "lvl": [
+            "Sexto Basico A",
+            "Sexto Basico B",
+            "Sexto Basico C",
+            "Sexto Basico D"
+          ]
+        },
+        "septimo": {
+          "name": "Septimo",
+          "lvl": [
+            "Septimo Basico A",
+            "Septimo Basico B",
+            "Septimo Basico C",
+            "Septimo Basico D",
+            "Septimo Basico E"
+          ]
+        },
+        "octavo": {
+          "name": "Octavo",
+          "lvl": [
+            "Octavo Basico A",
+            "Octavo Basico B",
+            "Octavo Basico C",
+            "Octavo Basico D",
+            "Octavo Basico E",
+            "Octavo Basico F"
+          ]
+        }
+      }
+    },
+    "Media": {
+      "name": "Media",
+      "nivel": {
+        "primero-medio": {
+          "name": "Primero Medio",
+          "lvl": [
+            "Primero Medio A",
+            "Primero Medio B",
+            "Primero Medio C",
+            "Primero Medio D",
+            "Primero Medio E"
+          ]
+        },
+        "segundo-medio": {
+          "name": "Segundo Medio",
+          "lvl": [
+            "Segundo Medio A",
+            "Segundo Medio B",
+            "Segundo Medio C",
+            "Segundo Medio D"
+          ]
+        },
+        "tercero-medio": {
+          "name": "Tercero Medio",
+          "lvl": [
+            "Tercero Medio A",
+            "Tercero Medio B",
+            "Tercero Medio C",
+            "Tercero Medio D"
+          ]
+        },
+        "cuarto-medio": {
+          "name": "Cuarto Medio",
+          "lvl": [
+            "Cuarto Medio A",
+            "Cuarto Medio B",
+            "Cuarto Medio C",
+            "Cuarto Medio D"
+          ]
+        }
+      }
+    }
+  }
+}
