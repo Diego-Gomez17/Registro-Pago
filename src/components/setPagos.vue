@@ -56,8 +56,8 @@
         </option>
       </select>
       <input v-else type="text" disabled readonly />
-      <label for="">Fecha de Pago</label>
-            <VueDatePicker v-model="fechaPago" :enable-time-picker="false" :format="format" :placeholder="fechaPago" />
+      <!-- <label for="">Fecha de Pago</label>
+            <VueDatePicker v-model="fechaPago" :enable-time-picker="false" :format="format" :placeholder="fechaPago" /> -->
       <label for="">Pago</label>
       <input type="number" v-model="pago" required />
 
@@ -93,6 +93,7 @@ import { ref as refVue, onMounted } from "vue";
 import { ref, push, onValue } from "firebase/database";
 import { db } from "../Firebase/init";
 import { swal } from "sweetalert2/dist/sweetalert2";
+import JSON from '../../src/utils/cursos.json';
 const currentDate = new Date().toLocaleDateString("es-ES");
 /* --------------------------------------------------------- */
 /* el pago se debe dividir entre los alumnos del apoderado   */
@@ -203,11 +204,11 @@ onMounted(() => {
     userOptions.value = options;
   });
   // Recupera los cursos
-  fetch("../../src/utils/cursos.json")
-    .then((response) => response.json())
-    .then((data) => (cursosJSON.value = data))
-    .catch((error) => console.error("Error al cargar el archivo JSON:", error));
-
+  // fetch("../../src/utils/cursos.json")
+  //   .then((response) => response.json())
+  //   .then((data) => (cursosJSON.value = data))
+  //   .catch((error) => console.error("Error al cargar el archivo JSON:", error));
+  cursosJSON.value = JSON
   updateNiveles();
 });
 

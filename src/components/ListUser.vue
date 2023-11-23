@@ -108,6 +108,8 @@ import { ref as collection, onValue } from "firebase/database";
 import { ref as refVue, computed } from "vue";
 import { db, auth } from "../Firebase/init";
 import { onMounted } from "vue";
+import JSON from '../../src/utils/cursos.json';
+import * as XLSX from "xlsx";
 
 const isLoading = refVue(true);
 
@@ -134,10 +136,7 @@ const updateNiveles = () => {
 };
 
 onMounted(() => {
-  fetch("../../src/utils/cursos.json")
-    .then((response) => response.json())
-    .then((data) => (cursosJSON.value = data))
-    .catch((error) => console.error("Error al cargar el archivo JSON:", error));
+  cursosJSON.value = JSON
 
   updateNiveles();
 
@@ -154,7 +153,7 @@ onMounted(() => {
       for (var payClient of payList.value) {
         uniqueYears.add(payClient.anualidad);
       }
-
+      
       /*--- ordena las fechas de forma descendente---*/
       const numeros = Array.from(uniqueYears);
 
@@ -261,7 +260,7 @@ const nextPage = () => {
   }
 };
 
-import * as XLSX from "xlsx";
+
 
 function exportToExcel() {
   // Get the table data.
@@ -278,13 +277,14 @@ function exportToExcel() {
       "Nombre apoderado",
       "Nombre del alumno",
       "Rut del alumno",
-      "Curso",
+      "Ciclo",
       "Nivel",
+      "Curso",
       "Anualidad",
       "Pago",
     ],
   ]);
-
+  
   // Iterate over the table data and add it to the worksheet.
   for (let i = 0; i < tableData.length; i++) {
     const payClient = tableData[i];
@@ -299,6 +299,7 @@ function exportToExcel() {
           payClient.alumno.rut,
           payClient.ciclo,
           payClient.nivel,
+          payClient.curso,
           payClient.anualidad,
           payClient.pago,
         ],
