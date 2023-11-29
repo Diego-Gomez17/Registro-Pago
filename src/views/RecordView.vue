@@ -26,7 +26,6 @@
   </div>
 </template>
 <script setup>
-import DialogApoderado from '../components/DialogApoderado.vue';
 import SetApoderado from '../components/SetApoderado.vue';
 import SetPagos from '../components/setPagos.vue';
 </script>

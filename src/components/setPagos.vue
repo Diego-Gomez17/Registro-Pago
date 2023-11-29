@@ -92,7 +92,6 @@
 import { ref as refVue, onMounted } from "vue";
 import { ref, push, onValue } from "firebase/database";
 import { db } from "../Firebase/init";
-import { swal } from "sweetalert2/dist/sweetalert2";
 import JSON from '../../src/utils/cursos.json';
 const currentDate = new Date().toLocaleDateString("es-ES");
 /* --------------------------------------------------------- */
@@ -203,11 +202,6 @@ onMounted(() => {
     }
     userOptions.value = options;
   });
-  // Recupera los cursos
-  // fetch("../../src/utils/cursos.json")
-  //   .then((response) => response.json())
-  //   .then((data) => (cursosJSON.value = data))
-  //   .catch((error) => console.error("Error al cargar el archivo JSON:", error));
   cursosJSON.value = JSON
   updateNiveles();
 });
@@ -224,15 +218,12 @@ function searchApoderado() {
   if (foundUser) {
     selectedUser.value = foundUser;
   } else {
-    // Si no se encuentra, puedes mostrar un mensaje de error o realizar alguna acción
-    // como limpiar los campos de búsqueda.
     Swal.fire({
       title: "Apoderado no encontrado",
       text: "El Rut ingresado no corresponde a un apoderado existente.",
       icon: "error",
       confirmButtonText: "Cerrar",
     });
-    // También puedes limpiar el campo de búsqueda después de mostrar el mensaje de error.
     rutInput.value = "";
   }
 }
