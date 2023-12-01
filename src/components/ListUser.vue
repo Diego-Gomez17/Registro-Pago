@@ -71,8 +71,8 @@
             <td>{{ payClient.apoderado.nombre }}</td>
             <td>{{ payClient.alumno.nombre }}</td>
             <td>{{ payClient.alumno.rut }}</td>
-            <td>{{ payClient.ciclo }}</td>
-            <td>{{ payClient.curso }}</td>
+            <td>{{ payClient.alumno.ciclo }}</td>
+            <td>{{ payClient.alumno.curso }}</td>
             <td>{{ payClient.anualidad }}</td>
             <td>${{ payClient.pago }}</td>
           </tr>
@@ -186,6 +186,7 @@ function filterPayments() {
   const queryNivel = nivel.value;
   const queryCurso = curso.value;
   return payList.value.filter((payClient) => {
+    
     const apoderadoNombre = payClient.apoderado.nombre.toLowerCase();
     const alumnoNombre = payClient.alumno.nombre.toLowerCase();
     const rut = payClient.apoderado.rut.toLowerCase();
@@ -193,9 +194,9 @@ function filterPayments() {
 
     const anualidad = payClient.anualidad;
 
-    const CCiclo = payClient.ciclo;
-    const CNivel = payClient.nivel;
-    const CCurso = payClient.curso;
+    const CCiclo = payClient.alumno.ciclo;
+    const CNivel = payClient.alumno.nivel;
+    const CCurso = payClient.alumno.curso;
 
     // Aplica lógica de filtro por búsqueda
     const searchFilter =
@@ -297,9 +298,9 @@ function exportToExcel() {
           payClient.apoderado.nombre,
           payClient.alumno.nombre,
           payClient.alumno.rut,
-          payClient.ciclo,
-          payClient.nivel,
-          payClient.curso,
+          payClient.alumno.ciclo,
+          payClient.alumno.nivel,
+          payClient.alumno.curso,
           payClient.anualidad,
           payClient.pago,
         ],

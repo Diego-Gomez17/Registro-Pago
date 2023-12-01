@@ -1,7 +1,7 @@
 <template>
   <div class="cont-apoderado">
     <h3>Ingresar un Pago</h3>
-    <form @submit.prevent="writeApoderadoData">
+    <form @submit.prevent="writeApoderadoData()">
       <!-- <label for="">Rut Apoderado</label>
             <select v-model="selectedUser" required>
                 <option value="">Selecciona un apoderado</option>
@@ -22,40 +22,6 @@
       <input readonly type="text" :value="selectedUser.nombre" />
       <label for="">Anualidad</label>
       <input type="text" v-model="anualidad" required />
-      <label for="ciclo">Ciclo</label>
-      <select
-        v-if="cursosJSON.cursos != null"
-        v-model="ciclo"
-        @change="updateNiveles"
-      >
-        <option
-          v-for="(curso, key) in cursosJSON.cursos"
-          :value="key"
-          :key="key"
-        >
-          {{ curso.name }}
-        </option>
-      </select>
-
-      <label for="nivel">Nivel del curso</label>
-      <select v-if="ciclo != null" v-model="nivel">
-        <option v-for="(nivel, key) in niveles" :value="key" :key="key">
-          {{ nivel.name }}
-        </option>
-      </select>
-      <input v-else type="text" disabled readonly />
-
-      <label for="curso">Curso</label>
-      <select v-if="nivel != null" v-model="curso">
-        <option
-          v-for="(lvl, index) in niveles[nivel]?.lvl"
-          :value="lvl"
-          :key="index"
-        >
-          {{ lvl }}
-        </option>
-      </select>
-      <input v-else type="text" disabled readonly />
       <!-- <label for="">Fecha de Pago</label>
             <VueDatePicker v-model="fechaPago" :enable-time-picker="false" :format="format" :placeholder="fechaPago" /> -->
       <label for="">Pago</label>
@@ -73,15 +39,63 @@
         <thead>
           <tr>
             <th>#</th>
+            <th>Status</th>
             <th>Nombre</th>
             <th>Rut</th>
+            <th>Ciclo</th>
+            <th>Nivel del curso</th>
+            <th>Curso</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(alumno, index) in selectedUser.alumnos" :key="index">
             <th scope="row">{{ index + 1 }}</th>
+            <td v-if="!als[index].status">❌</td>
+            <td v-else>✅</td>
             <td>{{ alumno.nombre }}</td>
             <td>{{ alumno.rut }}</td>
+            <td>
+              <select
+                v-if="cursosJSON.cursos != null"
+                v-model="alumno.ciclo"
+                @change="updateNiveles(index, alumno)"
+              >
+                <option
+                  v-for="(curso, key) in cursosJSON.cursos"
+                  :value="key"
+                  :key="key"
+                >
+                  {{ curso.name }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select v-if="alumno.ciclo != null" v-model="alumno.nivel">
+                <option
+                  v-for="(nivel, key) in als[index].niveles"
+                  :value="key"
+                  :key="key"
+                >
+                  {{ nivel.name }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select v-if="alumno.nivel != null" v-model="alumno.curso">
+                <option
+                  v-for="(lvl, index) in als[index]?.niveles[alumno.nivel]?.lvl"
+                  :value="lvl"
+                  :key="index"
+                >
+                  {{ lvl }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <button class="btn btn-success" @click="saveCicle(alumno, index)">
+                Guardar
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -92,15 +106,26 @@
 import { ref as refVue, onMounted } from "vue";
 import { ref, push, onValue } from "firebase/database";
 import { db } from "../Firebase/init";
-import JSON from '../../src/utils/cursos.json';
+import JSON from "../../src/utils/cursos.json";
 const currentDate = new Date().toLocaleDateString("es-ES");
 /* --------------------------------------------------------- */
 /* el pago se debe dividir entre los alumnos del apoderado   */
 /* --------------------------------------------------------- */
 
+const status = refVue(false);
 const anualidad = refVue(String(new Date().getFullYear()));
 const cursosJSON = refVue({});
 const niveles = refVue({});
+const al = refVue({
+  niveles: null,
+  nivel: null,
+  nombre: "",
+  rut: "",
+  ciclo: "",
+  lvl: null,
+  curso: null,
+});
+const als = refVue([al]);
 const ciclo = refVue(null); // parbulo, primer ciclo ,segundo ciclo, media
 const nivel = refVue(null); // a , b, c
 const curso = refVue(null); // primero, segundo <--- agregar
@@ -117,10 +142,27 @@ const format = (date) => {
   return `${day}/${month}/${year}`;
 };
 
+function saveCicle(alumno, index) {
+  al.value = Object.assign({}, selectedUser.value.alumnos[index]);
+  als.value[index] = al.value;
+  als.value[index].status = true;
+  console.log(als.value);
+  if (cursosJSON.value.cursos && cursosJSON.value.cursos[alumno.ciclo]) {
+    als.value[index].niveles = cursosJSON.value.cursos[alumno.ciclo].nivel;
+    Swal.fire({
+      title: "Se ha guardado correctamente los datos del alumno",
+      icon: "success",
+      confirmButtonText: "Cerrar",
+      timer: 1500,
+    });
+  } else {
+    console.error("cursosJSON.value.cursos[alumno.ciclo] es undefined");
+  }
+}
+
 //post
 function writeApoderadoData() {
   console.log("escribiendo un nuevo pago");
-  console.log(selectedUser.value.alumnos.length);
   var cantAlumnos = selectedUser.value.alumnos.length;
   var pagos = Math.trunc(pago.value / cantAlumnos);
 
@@ -136,24 +178,27 @@ function writeApoderadoData() {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         for (let student in selectedUser.value.alumnos) {
-          console.log(student);
-          console.log(selectedUser.value.alumnos[student].nombre);
-          console.log(pagos);
           const newPago = {
             apoderado: selectedUser.value,
-            alumno: selectedUser.value.alumnos[student],
-            anualidad: anualidad.value,
-            ciclo: ciclo.value,
-            nivel: nivel.value,
-            curso: curso.value,
+            alumno: {
+              nombre: selectedUser.value.alumnos[student].nombre,
+              rut: selectedUser.value.alumnos[student].rut,
+              ciclo: als.value[student].ciclo,
+              nivel: als.value[student].nivel,
+              curso: als.value[student].curso,
+            },
             pago: pagos,
+            anualidad: anualidad.value,
           };
-
-          push(pagoRef, newPago);
-          console.log("pago creado: ", anualidad.value);
+          if (newPago.alumno.curso) {
+            push(pagoRef, newPago);
+            resetData();
+            console.log("pago creado: ", anualidad.value);
+            Swal.fire("Saved!", "", "success");
+          } else {
+            Swal.fire("Debe ingresar los datos del alumno", "", "info");
+          }
         }
-        Swal.fire("Saved!", "", "success");
-        resetData();
       } else if (result.isDenied) {
         Swal.fire("No se ha guardado los datos", "", "info");
       }
@@ -165,7 +210,6 @@ function writeApoderadoData() {
       icon: "error",
       confirmButtonText: "Cerrar",
     });
-    resetData();
   }
 }
 
@@ -174,12 +218,10 @@ const apoderadoRef = ref(db, "apoderados");
 const userOptions = refVue([]);
 const selectedUser = refVue("");
 
-const updateNiveles = () => {
-  if (ciclo.value) {
-    niveles.value = cursosJSON.value.cursos[ciclo.value].nivel;
-    nivel.value = Object.keys(niveles.value)[0]; // Establecer el primer nivel como predeterminado
-    if (nivel.value) {
-      niveles.value = cursosJSON.value.cursos[ciclo.value]?.nivel;
+const updateNiveles = (key, alumno) => {
+  if (alumno) {
+    if (alumno.ciclo) {
+      als.value[key].niveles = cursosJSON.value.cursos[alumno.ciclo].nivel;
     }
   }
 };
@@ -202,11 +244,11 @@ onMounted(() => {
     }
     userOptions.value = options;
   });
-  cursosJSON.value = JSON
-  updateNiveles();
+  cursosJSON.value = JSON;
 });
 
 function searchApoderado() {
+  resetData();
   const rutToSearch = rutInput.value;
   if (!rutToSearch) {
     return;
@@ -217,6 +259,13 @@ function searchApoderado() {
 
   if (foundUser) {
     selectedUser.value = foundUser;
+    //crea una lista con los alumnos del apoderado
+    for (const kid in selectedUser.value.alumnos) {
+      al.value = Object.assign({}, selectedUser.value.alumnos[kid]);
+      al.value.status = status.value;
+      als.value.push(al.value);
+    }
+    console.log(als.value);
   } else {
     Swal.fire({
       title: "Apoderado no encontrado",
@@ -229,11 +278,12 @@ function searchApoderado() {
 }
 
 function resetData() {
+  selectedUser.value = null;
   anualidad.value = String(new Date().getFullYear());
-  nivel.value = ""; // a , b, c
-  ciclo.value = ""; // parbulo, primer ciclo ,segundo ciclo, media
   fechaPago.value = currentDate;
   pago.value = null;
+  al.value = null;
+  als.value = [];
 }
 </script>
 <style scoped>

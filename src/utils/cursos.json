@@ -10,15 +10,15 @@
         "pre-kinder": {
           "name": "Pre kinder",
           "lvl": [
-            "Pre kinder A",
-            "Pre kinder B",
-            "Pre kinder C",
-            "Pre kinder D"
+            "PK.A",
+            "PK.B",
+            "PK.C",
+            "PK.D"
           ]
         },
         "kinder": {
           "name": "Kinder",
-          "lvl": ["Kinder A", "Kinder B", "Kinder C", "Kinder D"]
+          "lvl": ["K.A", "K.B", "K.C", "K.D"]
         }
       }
     },
@@ -28,37 +28,37 @@
         "primero-basico": {
           "name": "Primero Basico",
           "lvl": [
-            "Primero Basico A",
-            "Primero Basico B",
-            "Primero Basico C",
-            "Primero Basico D"
+            "1°B.A",
+            "1°B.B",
+            "1°B.C",
+            "1°B.D"
           ]
         },
         "segundo-basico": {
           "name": "Segundo Basico",
           "lvl": [
-            "Segundo Basico A",
-            "Segundo Basico B",
-            "Segundo Basico C",
-            "Segundo Basico D"
+            "2°B.A",
+            "2°B.B",
+            "2°B.C",
+            "2°B.D"
           ]
         },
         "tercero-basico": {
           "name": "Tercero Basico",
           "lvl": [
-            "Tercero Basico A",
-            "Tercero Basico B",
-            "Tercero Basico C",
-            "Tercero Basico D"
+            "3°B.A",
+            "3°B.B",
+            "3°B.C",
+            "3°B.D"
           ]
         },
         "cuarto-basico": {
           "name": "Cuarto Basico",
           "lvl": [
-            "Cuarto Basico A",
-            "Cuarto Basico B",
-            "Cuarto Basico C",
-            "Cuarto Basico D"
+            "4°B.A",
+            "4°B.B",
+            "4°B.C",
+            "4°B.D"
           ]
         }
       }
@@ -69,40 +69,40 @@
         "quinto": {
           "name": "Quinto",
           "lvl": [
-            "Quinto Basico A",
-            "Quinto Basico B",
-            "Quinto Basico C",
-            "Quinto Basico D"
+            "5°B.A",
+            "5°B.B",
+            "5°B.C",
+            "5°B.D"
           ]
         },
         "sexto": {
           "name": "Sexto",
           "lvl": [
-            "Sexto Basico A",
-            "Sexto Basico B",
-            "Sexto Basico C",
-            "Sexto Basico D"
+            "6°B.A",
+            "6°B.B",
+            "6°B.C",
+            "6°B.D"
           ]
         },
         "septimo": {
           "name": "Septimo",
           "lvl": [
-            "Septimo Basico A",
-            "Septimo Basico B",
-            "Septimo Basico C",
-            "Septimo Basico D",
-            "Septimo Basico E"
+            "7°B.A",
+            "7°B.B",
+            "7°B.C",
+            "7°B.D",
+            "7°B.E"
           ]
         },
         "octavo": {
           "name": "Octavo",
           "lvl": [
-            "Octavo Basico A",
-            "Octavo Basico B",
-            "Octavo Basico C",
-            "Octavo Basico D",
-            "Octavo Basico E",
-            "Octavo Basico F"
+            "8°B.A",
+            "8°B.B",
+            "8°B.C",
+            "8°B.D",
+            "8°B.E",
+            "8°B.F"
           ]
         }
       }
@@ -113,38 +113,38 @@
         "primero-medio": {
           "name": "Primero Medio",
           "lvl": [
-            "Primero Medio A",
-            "Primero Medio B",
-            "Primero Medio C",
-            "Primero Medio D",
-            "Primero Medio E"
+            "1°M.A",
+            "1°M.B",
+            "1°M.C",
+            "1°M.D",
+            "1°M.E"
           ]
         },
         "segundo-medio": {
           "name": "Segundo Medio",
           "lvl": [
-            "Segundo Medio A",
-            "Segundo Medio B",
-            "Segundo Medio C",
-            "Segundo Medio D"
+            "2°M.A",
+            "2°M.B",
+            "2°M.C",
+            "2°M.D"
           ]
         },
         "tercero-medio": {
           "name": "Tercero Medio",
           "lvl": [
-            "Tercero Medio A",
-            "Tercero Medio B",
-            "Tercero Medio C",
-            "Tercero Medio D"
+            "3°M.A",
+            "3°M.B",
+            "3°M.C",
+            "3°M.D"
           ]
         },
         "cuarto-medio": {
           "name": "Cuarto Medio",
           "lvl": [
-            "Cuarto Medio A",
-            "Cuarto Medio B",
-            "Cuarto Medio C",
-            "Cuarto Medio D"
+            "4°M.A",
+            "4°M.B",
+            "4°M.C",
+            "4°M.D"
           ]
         }
       }
