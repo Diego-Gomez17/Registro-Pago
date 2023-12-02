@@ -192,7 +192,6 @@ function writeApoderadoData() {
           };
           if (newPago.alumno.curso) {
             push(pagoRef, newPago);
-            resetData();
             console.log("pago creado: ", anualidad.value);
             Swal.fire("Saved!", "", "success");
           } else {
