@@ -2,12 +2,6 @@
   <div class="cont-apoderado">
     <h3>Ingresar un Pago</h3>
     <form @submit.prevent="writeApoderadoData()">
-      <!-- <label for="">Rut Apoderado</label>
-            <select v-model="selectedUser" required>
-                <option value="">Selecciona un apoderado</option>
-                <option v-for="user in userOptions" :key="user.id" :value="user">{{ user.rut }}</option>
-            </select> -->
-
       <label for="rutInput">Rut Apoderado</label>
       <input type="text" v-model="rutInput" id="rutInput" required />
       <button
@@ -22,8 +16,13 @@
       <input readonly type="text" :value="selectedUser.nombre" />
       <label for="">Anualidad</label>
       <input type="text" v-model="anualidad" required />
-      <!-- <label for="">Fecha de Pago</label>
-            <VueDatePicker v-model="fechaPago" :enable-time-picker="false" :format="format" :placeholder="fechaPago" /> -->
+      <label for="">Fecha de Pago</label>
+      <VueDatePicker
+        v-model="fechaPago"
+        :enable-time-picker="false"
+        :format="format"
+        :placeholder="fechaPago"
+      />
       <label for="">Pago</label>
       <input type="number" v-model="pago" required />
 
@@ -107,6 +106,8 @@ import { ref as refVue, onMounted } from "vue";
 import { ref, push, onValue } from "firebase/database";
 import { db } from "../Firebase/init";
 import JSON from "../../src/utils/cursos.json";
+import { useRouter } from "vue-router";
+
 const currentDate = new Date().toLocaleDateString("es-ES");
 /* --------------------------------------------------------- */
 /* el pago se debe dividir entre los alumnos del apoderado   */
@@ -129,7 +130,7 @@ const als = refVue([al]);
 const ciclo = refVue(null); // parbulo, primer ciclo ,segundo ciclo, media
 const nivel = refVue(null); // a , b, c
 const curso = refVue(null); // primero, segundo <--- agregar
-const fechaPago = refVue(currentDate);
+const fechaPago = refVue();
 const pago = refVue(); //aporte voluntario
 
 const pagoRef = ref(db, "pagos");
@@ -165,9 +166,7 @@ function writeApoderadoData() {
   console.log("escribiendo un nuevo pago");
   var cantAlumnos = selectedUser.value.alumnos.length;
   var pagos = Math.trunc(pago.value / cantAlumnos);
-
   try {
-    //newPago.fechaPago = fechaPago.value.toLocaleDateString('es-ES');
     Swal.fire({
       title: "Estas seguro de ingresar este pago?",
       showDenyButton: true,
@@ -189,11 +188,13 @@ function writeApoderadoData() {
             },
             pago: pagos,
             anualidad: anualidad.value,
+            fechaPago: format(fechaPago.value),
           };
           if (newPago.alumno.curso) {
             push(pagoRef, newPago);
             console.log("pago creado: ", anualidad.value);
             Swal.fire("Saved!", "", "success");
+            reload();
           } else {
             Swal.fire("Debe ingresar los datos del alumno", "", "info");
           }
@@ -226,7 +227,6 @@ const updateNiveles = (key, alumno) => {
 };
 
 onMounted(() => {
-  // Recuperar los datos de los usuarios
   onValue(apoderadoRef, (snapshot) => {
     const userData = snapshot.val();
     const options = [];
@@ -279,10 +279,13 @@ function searchApoderado() {
 function resetData() {
   selectedUser.value = null;
   anualidad.value = String(new Date().getFullYear());
-  fechaPago.value = currentDate;
+  fechaPago.value = null;
   pago.value = null;
   al.value = null;
   als.value = [];
+}
+function reload() {
+  location.reload()
 }
 </script>
 <style scoped>
