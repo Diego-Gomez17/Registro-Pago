@@ -25,6 +25,20 @@
       />
       <label for="">Pago</label>
       <input type="number" v-model="pago" required />
+      <label for="">Modo de Pago</label>
+      <select name="" id="" v-model="modoPago">
+        <option value="">Seleccione un modo de pago</option>
+        <option value="Debito">Debito</option>
+        <option value="Efectivo">Efectivo</option>
+      </select>
+
+      <label for="">Administrador</label>
+      <select name="" id="" v-model="admin">
+        <option value="" selected>Seleccione al administrador</option>
+        <option value="Griselle  Calderón">Griselle  Calderón</option>
+        <option value="Angelica Rodriguez">Angelica Rodriguez</option>
+        <option value="Marcela Collado">Marcela Collado</option>
+      </select>
 
       <input
         type="submit"
@@ -132,6 +146,8 @@ const nivel = refVue(null); // a , b, c
 const curso = refVue(null); // primero, segundo <--- agregar
 const fechaPago = refVue();
 const pago = refVue(); //aporte voluntario
+const modoPago = refVue()
+const admin = refVue()
 
 const pagoRef = ref(db, "pagos");
 //formart datePicker
@@ -189,6 +205,8 @@ function writeApoderadoData() {
             pago: pagos,
             anualidad: anualidad.value,
             fechaPago: format(fechaPago.value),
+            modoPago: modoPago.value,
+            admin: admin.value
           };
           if (newPago.alumno.curso) {
             push(pagoRef, newPago);

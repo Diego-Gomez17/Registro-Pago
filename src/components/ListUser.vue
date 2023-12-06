@@ -60,6 +60,8 @@
             <th scope="col">Anualidad</th>
             <th scope="col">Pago</th>
             <th scope="col">Fecha de pago</th>
+            <th scope="col">Modo de pago</th>
+            <th scope="col">Administrador</th>
           </tr>
         </thead>
         <tbody>
@@ -77,6 +79,8 @@
             <td>{{ payClient.anualidad }}</td>
             <td>${{ payClient.pago }}</td>
             <td>{{ payClient.fechaPago }}</td>
+            <td>{{ payClient.modoPago }}</td>
+            <td>{{ payClient.admin }}</td>
           </tr>
         </tbody>
       </table>
@@ -285,7 +289,9 @@ function exportToExcel() {
       "Curso",
       "Anualidad",
       "Pago",
-      "fecha de pago"
+      "Fecha de pago",
+      "Metodo de pago",
+      "Administrador"
     ],
   ]);
   
@@ -306,7 +312,9 @@ function exportToExcel() {
           payClient.alumno.curso,
           payClient.anualidad,
           payClient.pago,
-          payClient.fechaPago
+          payClient.fechaPago,
+          payClient.modoPago,
+          payClient.admin
         ],
       ],
       { origin: -1 }
