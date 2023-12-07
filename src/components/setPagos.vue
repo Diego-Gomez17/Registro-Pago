@@ -30,6 +30,7 @@
         <option value="">Seleccione un modo de pago</option>
         <option value="Debito">Debito</option>
         <option value="Efectivo">Efectivo</option>
+        <option value="Transferencia">Transferencia</option>
       </select>
 
       <label for="">Administrador</label>
