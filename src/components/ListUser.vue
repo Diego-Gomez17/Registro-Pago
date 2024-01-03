@@ -120,7 +120,7 @@ import * as XLSX from "xlsx";
 const isLoading = refVue(true);
 
 const payList = refVue([]);
-const payRef = collection(db, "pagos/");
+const payRef = collection(db, "pagos");
 const searchQuery = refVue(""); // Criterio de búsqueda
 const selectedYear = refVue(""); // Año seleccionado en el filtro
 const availableYears = refVue([null]); //listas de años

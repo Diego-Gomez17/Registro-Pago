@@ -7,7 +7,7 @@
 
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/records">Registro</RouterLink>
-
+        <RouterLink to="/edits">Editar</RouterLink>
         <Auth />
       </nav>
     </div>
