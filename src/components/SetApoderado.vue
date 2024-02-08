@@ -175,6 +175,7 @@ async function writeApoderadoData() {
 }
 
 async function buscarApoderadoPorRut() {
+  alumnos.value = [];
   const ap = "";
   const querySnapshot = await get(apoderadoRef);
   const apoderados = querySnapshot.val();
