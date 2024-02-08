@@ -135,7 +135,7 @@ async function writeApoderadoData() {
           showCancelButton: true,
           confirmButtonText: "Guardar",
           denyButtonText: `Mejor no`,
-        }).then(async (result) => { 
+        }).then(async (result) => {
           if (result.isConfirmed) {
             const newApoderado = {
               nombre: nombre.value,
@@ -175,7 +175,11 @@ async function writeApoderadoData() {
 }
 
 async function buscarApoderadoPorRut() {
+  console.log(alumnos.value);
+  console.log("owo----");
   alumnos.value = [];
+  console.log(alumnos.value);
+
   const ap = "";
   const querySnapshot = await get(apoderadoRef);
   const apoderados = querySnapshot.val();
@@ -263,8 +267,9 @@ function addAlumno() {
     alumno.value.rut = "";
   }
 }
-function deleteAlumno(alumno) {
-  this.alumnos.splice(this.alumnos.indexOf(alumno), 1);
+async function deleteAlumno(alumno) {
+  const al = alumnos.value.indexOf(alumno);
+  alumnos.value.splice(al, 1);
   console.log("eliminando alumno");
 }
 </script>
