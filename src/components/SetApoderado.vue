@@ -176,7 +176,6 @@ async function writeApoderadoData() {
 
 async function buscarApoderadoPorRut() {
   console.log(alumnos.value);
-  console.log("owo----");
   alumnos.value = [];
   console.log(alumnos.value);
 
@@ -195,9 +194,7 @@ async function buscarApoderadoPorRut() {
             rut: "",
           };
         }
-        //console.log(newAlumno)
         ap = apoderados[key].rut;
-        console.log(ap);
       }
     }
     if (ap != null) {
