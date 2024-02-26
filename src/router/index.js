@@ -24,6 +24,12 @@ const router = createRouter({
       name: 'edits',
       component: () => import('../views/EditView.vue'),
       meta: {requiresAuth: true},
+    },
+    {
+      path: '/bill',
+      name: 'bill',
+      component: () => import('../views/BillView.vue'),
+      meta: {requiresAuth: true},
     }
   ]
 })

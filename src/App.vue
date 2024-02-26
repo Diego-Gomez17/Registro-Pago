@@ -8,6 +8,7 @@
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/records">Registro</RouterLink>
         <RouterLink to="/edits">Editar</RouterLink>
+        <RouterLink to="/bill">Boleta</RouterLink>
         <Auth />
       </nav>
     </div>
