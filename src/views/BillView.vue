@@ -23,9 +23,17 @@
             <td>{{ payments[0].apoderado.nombre }}</td>
             <td>{{ payments.total }}</td>
             <td>{{ payments[0].anualidad }}</td>
-            <td><img src="@/assets/img/download.svg" alt="" srcset="" class="btn btn-success"></td>
+            <td>
+              <button @click="download">
+                <img
+                  src="@/assets/img/download.svg"
+                  alt=""
+                  srcset=""
+                  class="btn btn-success"
+                />
+              </button>
+            </td>
           </tr>
-
         </table>
       </div>
     </div>
@@ -35,6 +43,7 @@
 import { ref as refVue, onMounted } from "vue";
 import { ref, push, onValue, child, remove } from "firebase/database";
 import { db } from "../Firebase/init";
+import { jsPDF } from "jspdf";
 
 const payRef = ref(db, "pagos");
 
@@ -60,21 +69,19 @@ function searchPay() {
             id: key,
             ...payment,
           });
-          if (payments[year]["total"]){
-            payments[year]["total"] = payments[year]["total"] + payment.pago ;
+          if (payments[year]["total"]) {
+            payments[year]["total"] = payments[year]["total"] + payment.pago;
+          } else {
+            payments[year]["total"] = payment.pago;
           }
-          else{
-            payments[year]["total"] = payment.pago
-          }
-
         }
       }
-      for(const age in payments){
-        const correction = payments[age].total % 10
-        if(correction != 0 ){
-          while(true){
-            payments[age].total = payments[age].total + 1
-            if (payments[age].total % 10 === 0){
+      for (const age in payments) {
+        const correction = payments[age].total % 10;
+        if (correction != 0) {
+          while (true) {
+            payments[age].total = payments[age].total + 1;
+            if (payments[age].total % 10 === 0) {
               break;
             }
           }
@@ -83,6 +90,12 @@ function searchPay() {
       paymentsByYear.value = payments;
     });
   }
+}
+function download() {
+  const doc = new jsPDF();
+
+  doc.text("Hello world!", 10, 10);
+  doc.save("a4.pdf");
 }
 </script>
 <style scoped>
