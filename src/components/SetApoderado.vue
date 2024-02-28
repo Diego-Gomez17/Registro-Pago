@@ -179,7 +179,7 @@ async function buscarApoderadoPorRut() {
   alumnos.value = [];
   console.log(alumnos.value);
 
-  const ap = "";
+  let ap = "";
   const querySnapshot = await get(apoderadoRef);
   const apoderados = querySnapshot.val();
   if (apoderados) {
