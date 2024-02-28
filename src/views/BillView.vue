@@ -24,7 +24,7 @@
             <td>{{ payments.total }}</td>
             <td>{{ payments[0].anualidad }}</td>
             <td>
-              <button @click="download">
+              <button @click="download(year,payments)">
                 <img
                   src="@/assets/img/download.svg"
                   alt=""
@@ -39,9 +39,10 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref as refVue, onMounted } from "vue";
-import { ref, push, onValue, child, remove } from "firebase/database";
+import { ref, push, onValue, child, remove, set } from "firebase/database";
 import { db } from "../Firebase/init";
 import { jsPDF } from "jspdf";
 
@@ -88,14 +89,68 @@ function searchPay() {
         }
       }
       paymentsByYear.value = payments;
+
     });
   }
 }
-function download() {
-  const doc = new jsPDF();
+function download(year, data) {
+  const doc = new jsPDF({
+    orientation: "landscape"
+  });
+  //Logo
+  doc.setFontSize(20);
+  let img = new Image();
+  img.src = "./src/assets/img/logo.png";
+  doc.addImage(img, "PNG", 0, 0, 30, 30);
 
-  doc.text("Hello world!", 10, 10);
-  doc.save("a4.pdf");
+  // Datos de la empresa
+  doc.text("Francis School", 30, 10);
+  doc.text("Centro General de Apoderados", 30, 20);
+
+  // Apoderado
+  doc.text(`Apoderado: ${data[0].apoderado.nombre}`,30,35)
+
+
+  //tabla
+  doc.text(`Alumno/s:`,30,55)
+  // Datos de ejemplo para la tabla
+  var generateData = function (data) {
+    let result = [];
+
+    for( let i=0; i < data.length; i++){
+      result.push (Object.assign({},data[i].alumno))
+    }
+    return result
+  };
+
+  function createHeaders(keys) {
+    var result = [];
+    for (var i = 0; i < keys.length; i += 1) {
+      result.push({
+        id: keys[i],
+        name: keys[i],
+        prompt: keys[i],
+        width: 90,
+        align: "center",
+        padding: 0,
+      });
+    }
+    return result;
+  }
+
+  var headers = createHeaders([
+    "nombre",
+    "curso",
+    "rut"
+  ]);
+
+  doc.table(30, 60, generateData(data), headers, { autoSize: false });
+
+  doc.setFontSize(20)
+  doc.text(`Total pagado: $${data.total}`, 30,150);
+
+  // Guardar el documento
+  doc.save("boleta.pdf");
 }
 </script>
 <style scoped>
