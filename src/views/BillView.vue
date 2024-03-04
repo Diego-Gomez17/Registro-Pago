@@ -100,19 +100,23 @@ function download(year, data) {
   //Logo
   doc.setFontSize(20);
   let img = new Image();
-  img.src = "./src/assets/img/logo.png";
-  doc.addImage(img, "PNG", 0, 0, 30, 30);
+  img.src = "/assets/logo-8f341bca.png";
+  doc.addImage(img, "png", 5, 0, 30, 30);
 
   // Datos de la empresa
-  doc.text("Francis School", 30, 10);
-  doc.text("Centro General de Apoderados", 30, 20);
+  doc.text("Francis School", 40, 10);
+  doc.text(`Fecha: ${data[0].fechaPago}`,180,10)
+
+  doc.text("Centro General de Apoderados", 40, 20);
 
   // Apoderado
-  doc.text(`Apoderado: ${data[0].apoderado.nombre}`,30,35)
+  doc.text(`Apoderado: ${data[0].apoderado.nombre}`,30,50)
+  //total pagado
+  doc.text(`Total pagado: $${data.total}`, 30,60);
 
 
   //tabla
-  doc.text(`Alumno/s:`,30,55)
+  doc.text(`Alumno/s:`,30,75)
   // Datos de ejemplo para la tabla
   var generateData = function (data) {
     let result = [];
@@ -144,13 +148,11 @@ function download(year, data) {
     "rut"
   ]);
 
-  doc.table(30, 60, generateData(data), headers, { autoSize: false });
+  doc.table(30, 80, generateData(data), headers, { autoSize: false });
 
-  doc.setFontSize(20)
-  doc.text(`Total pagado: $${data.total}`, 30,150);
 
   // Guardar el documento
-  doc.save("boleta.pdf");
+  doc.save(`boleta_${data[0].apoderado.nombre}_${data[0].anualidad}.pdf`);
 }
 </script>
 <style scoped>
