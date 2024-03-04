@@ -100,15 +100,19 @@ function download(year, data) {
   //Logo
   doc.setFontSize(20);
   let img = new Image();
-  img.src = "./src/assets/img/logo.png";
-  doc.addImage(img, "PNG", 5, 0, 30, 30);
+  img.src = "/assets/logo-8f341bca.png";
+  doc.addImage(img, "png", 5, 0, 30, 30);
 
   // Datos de la empresa
   doc.text("Francis School", 40, 10);
+  doc.text(`Fecha: ${data[0].fechaPago}`,180,10)
+
   doc.text("Centro General de Apoderados", 40, 20);
 
   // Apoderado
   doc.text(`Apoderado: ${data[0].apoderado.nombre}`,30,50)
+  //total pagado
+  doc.text(`Total pagado: $${data.total}`, 30,60);
 
 
   //tabla
@@ -146,9 +150,6 @@ function download(year, data) {
 
   doc.table(30, 80, generateData(data), headers, { autoSize: false });
 
-  doc.setFontSize(20)
-  doc.text(`Fecha: ${data[0].fechaPago}`,180,10)
-  doc.text(`Total pagado: $${data.total}`, 30,60);
 
   // Guardar el documento
   doc.save(`boleta_${data[0].apoderado.nombre}_${data[0].anualidad}.pdf`);
