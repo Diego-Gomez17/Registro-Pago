@@ -147,6 +147,7 @@ function download(year, data) {
   doc.table(30, 80, generateData(data), headers, { autoSize: false });
 
   doc.setFontSize(20)
+  doc.text(`Fecha: ${data[0].fechaPago}`,180,10)
   doc.text(`Total pagado: $${data.total}`, 30,60);
 
   // Guardar el documento
